@@ -1,5 +1,5 @@
 /* eslint-disable no-plusplus */
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import { jssPreset, StylesProvider } from "@material-ui/core/styles";
 import { create } from "jss";
 import PropTypes from "prop-types";
@@ -20,52 +20,41 @@ const createGenerateClassName = () => {
 };
 const generateClassName = createGenerateClassName();
 
-class Theme extends Component {
-  state = { theme: null };
+const Theme = props => {
+  const [theme, setTheme] = useState(null);
 
-  updateTheme = () => {
-    const { type } = this.props;
-    this.setState({ theme: makeBaseTheme(type) });
+  const { type } = props;
+
+  const updateUITheme = () => {
+    setTheme(makeBaseTheme(type));
   };
 
-  componentDidMount = () => {
-    this.updateTheme();
-    window.addEventListener("resize", this.handleResize);
-  };
+  useEffect(updateUITheme, [type]);
 
-  componentDidUpdate = prevProps => {
-    const { type } = this.props;
+  useEffect(() => {
+    // initiate the event handler
+    window.addEventListener("resize", updateUITheme);
 
-    if (type !== prevProps.type) {
-      this.updateTheme();
-    }
-  };
+    // this will clean up the event every time the component is re-rendered
+    return function cleanup() {
+      window.removeEventListener("resize", updateUITheme);
+    };
+  });
 
-  componentWillUnmount = () => {
-    window.removeEventListener("resize", this.handleResize);
-  };
-
-  handleResize = () => {
-    this.updateTheme();
-  };
-
-  render() {
-    const { theme } = this.state;
-    const { children } = this.props;
-    if (theme === null) {
-      return null;
-    }
-
-    return (
-      <StylesProvider jss={jss} generateClassName={generateClassName}>
-        <MuiThemeProvider theme={theme}>
-          <CssBaseline />
-          {children}
-        </MuiThemeProvider>
-      </StylesProvider>
-    );
+  const { children } = props;
+  if (theme === null) {
+    return null;
   }
-}
+
+  return (
+    <StylesProvider jss={jss} generateClassName={generateClassName}>
+      <MuiThemeProvider theme={theme}>
+        <CssBaseline />
+        {children}
+      </MuiThemeProvider>
+    </StylesProvider>
+  );
+};
 
 Theme.defaultProps = {
   type: "dark"

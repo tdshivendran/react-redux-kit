@@ -10,10 +10,7 @@ const isLocalHost = NODE_ENV === "development";
 const styles = () => ({});
 
 class ErrorBoundry extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { error: null };
-  }
+  state = { error: null };
 
   componentDidCatch = error => {
     this.setState({ error });
