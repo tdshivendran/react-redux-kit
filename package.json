@@ -22,7 +22,7 @@
     "jss": "^10.0.4",
     "lint-staged": "^10.0.8",
     "localforage": "^1.7.3",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "prettier": "^1.19.1",
     "prop-types": "^15.7.2",
     "react": "latest",
